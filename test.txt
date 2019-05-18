@@ -1,0 +1,114 @@
+package weather;
+
+import java.util.Random;
+class tianqi {
+
+	private int temp;
+	private int hum;
+	boolean b;
+	public int getTemp() {
+		return temp;
+	}
+	public void setTemp(int temp) {
+		this.temp = temp;
+	}
+	public int getHum() {
+		return hum;
+	}
+	public void setHum(int hum) {
+		this.hum = hum;
+	}
+	public void generate() {
+		if(b=true) {
+		notifyAll();
+		}
+		else if (b) {
+			try {
+				wait();
+			} catch (Exception ex) {
+				ex.printStackTrace(System.err);
+			}
+		setTemp((int) (Math.random() * 40));//double类型值不可与settemp兼容，强制转换
+		setHum((int) (Math.random() * 100));
+		System.out.println("decrating " + this);
+		}
+	}
+	public void read() {
+		if(b=false){
+		notifyAll();
+		}
+		 else if (b=true) {
+			try {
+				wait();
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+			}
+			System.out.println("reading " + this);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "the temp is：" + temp + ",hum ：" + hum;
+	}
+
+}
+class getweather implements Runnable {
+	tianqi weather;
+	public getweather(tianqi weather) {
+		this.weather = weather;
+	}
+	@Override
+	public void run() {
+		int i = 0;
+		while (i < 100) {
+			weather.generate();
+			try {
+				Thread.sleep(5000);
+			} catch (Exception ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			i++;
+		}
+
+	}
+
+}
+class showweather implements Runnable {
+	tianqi weather;
+
+	public showweather(tianqi weather) {
+		this.weather = weather;
+	}
+
+	@Override
+	public void run() {
+		int i = 0;
+		while (i < 100) {
+			weather.read();
+			try {
+				Thread.sleep(100);
+			} catch (Exception ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			i++;
+		}
+
+	}
+
+}
+public class tianq {
+
+	public static void main(String[] args) {
+
+		tianqi weather = new tianqi();
+		new Thread(new getweather(weather)).start();
+		new Thread(new showweather(weather)).start();
+
+	}
+
+}
+
+
